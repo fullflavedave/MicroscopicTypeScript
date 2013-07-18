@@ -12,6 +12,26 @@ Posts.deny({
   }
 });
 
+/*
+Posts.deny({
+  update: function(userId, post, fieldNames) {
+    return true;
+  }
+});
+*/
+
+/*
+Posts.deny({
+  update: function(userId, post, fieldNames) {
+    if (!post.title) {
+      throw new Meteor.Error(422, 'Please fill in a title' + JSON.stringify(post, null, 4));
+    }
+  }
+})
+*/
+
+
+
 Meteor.methods({
   insertPost: function(postAttributes) {
     var user = Meteor.user(),
@@ -27,7 +47,8 @@ Meteor.methods({
         'This link has already been posted',
         postWithSameLink._id); }
     // pick out the whitelisted keys
-    var post = _.extend(_.pick(postAttributes, 'url', 'title', 'message'), { userId: user._id,
+    var post = _.extend(_.pick(postAttributes, 'url', 'title', 'message'), {
+      userId: user._id,
       author: user.username,
       submitted: new Date().getTime()
     });

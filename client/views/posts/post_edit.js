@@ -16,7 +16,8 @@ Template.postEdit.events({
     Posts.update(currentPostId, {$set: postProperties}, function (error) {
       if (error) {
         // display the error to the user
-        alert(error.reason);
+        Meteor.errors.throw(error.reason);
+        //alert(error.reason);
       } else {
         Meteor.Router.to('postPage', currentPostId);
       }
