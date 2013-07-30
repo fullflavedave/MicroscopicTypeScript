@@ -11,3 +11,4 @@ Template.header.helpers({
     return active && 'active';
   }
 });
+

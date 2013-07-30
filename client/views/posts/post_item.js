@@ -1,19 +1,25 @@
 Template.postItem.helpers({
-  ownPost: function () {
+  ownPost: function() {
     return this.userId == Meteor.userId();
   },
-  domain: function () {
+  domain: function() {
     var a = document.createElement('a');
     a.href = this.url;
     return a.hostname;
   },
-  upvotedClass: function () {
+  upvotedClass: function() {
     var userId = Meteor.userId();
     if (userId && !_.include(this.upvoters, userId)) {
       return 'btn-primary upvoteable';
     } else {
       return 'disabled';
     }
+  },
+  isPostDetailPage: function() {
+    return Session.get('currentPostId');
+  },
+  isNotPostDetailPage: function() {
+    return Session.get('currentPostId') === null;
   }
 });
 
