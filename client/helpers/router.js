@@ -25,7 +25,9 @@ Meteor.Router.add({
     and: function(id) { Session.set('currentPostId', id)}
   },
 
-  '/submit': 'postSubmit'
+  '/post/new': {
+    to: 'postNew'
+  }
 });
 
 Meteor.Router.filters({
@@ -43,5 +45,5 @@ Meteor.Router.filters({
   }
 });
 
-Meteor.Router.filter('requireLogin', {only: 'postSubmit'});
+Meteor.Router.filter('requireLogin', {only: 'postNew'});
 Meteor.Router.filter('clearErrors');

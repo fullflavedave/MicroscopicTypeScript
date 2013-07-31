@@ -1,4 +1,4 @@
-Template.postSubmit.events({
+Template.postNew.events({
   'submit form': function (event) {
     event.preventDefault();
     var post = {
@@ -6,6 +6,8 @@ Template.postSubmit.events({
       title: $(event.target).find('[name=title]').val(),
       message: $(event.target).find('[name=message]').val()
     }
+
+    Meteor.Errors.clear();  // DA: I added this in so that duplicate errors aren't shown after multiple posts
 
     Meteor.call('insertPost', post, function (error, id) {
       if (error) {

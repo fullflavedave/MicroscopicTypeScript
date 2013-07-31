@@ -9,8 +9,8 @@
         <li class="{{activeRouteClass 'bestPosts'}}">
           <a href="{{bestPostsPath}}">Best</a></li>
         {{#if currentUser}}
-          <li class="{{activeRouteClass 'postSubmit'}}">
-            <a href="/submit">Submit Post</a>
+          <li class="{{activeRouteClass 'postNew'}}">
+            <a href="{{postNewPath}}">Submit Post</a>
           </li>
         {{/if}}
         <li class="dropdown">
