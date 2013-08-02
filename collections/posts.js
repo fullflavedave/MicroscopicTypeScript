@@ -1,34 +1,36 @@
 Posts = new Meteor.Collection('posts');
 
+Posts.deny({
+  update: function (userId, post, fieldNames) {
+    // may only edit the following three fields:
+    return (_.without(fieldNames, 'url', 'title', 'message').length > 0);
+  }
+});
+
+Posts.deny({
+ update: function(userId, post, fieldNames) {
+
+/* // This validation won't work b/c it appears that the values in post are
+      the values from Mongo, not from the form
+   if (!post.title) {
+     throw new Meteor.Error(422, 'Please fill in a title');
+   }
+*/
+
+/*
+ var postWithSameLink = Posts.findOne({url: post.url});
+
+ if (post.url && postWithSameLink) {
+     throw new Meteor.Error(302, 'This link has already been posted', postWithSameLink._id);
+   }
+*/
+ }
+});
+
 Posts.allow({
   update: ownsDocument,
   remove: ownsDocument
 })
-
-Posts.deny({
-  update: function (userId, post, fieldNames) {
-    // may only edit the following threee fields:
-    return (_.without(fieldNames, 'url', 'title').length > 0);
-  }
-});
-
-/*
- Posts.deny({
- update: function(userId, post, fieldNames) {
- return true;
- }
- });
- */
-
-/*
- Posts.deny({
- update: function(userId, post, fieldNames) {
- if (!post.title) {
- throw new Meteor.Error(422, 'Please fill in a title' + JSON.stringify(post, null, 4));
- }
- }
- })
- */
 
 Meteor.methods({
   insertPost: function (postAttributes) {
