@@ -19,20 +19,20 @@ Template.bestPosts.helpers({
 Template.postsList.helpers({
   postsWithRank: function() {
     var i = 0, options = {sort: this.sort, limit: this.handle.limit()};
-    return Posts.find({}, options).map(function(post) {
+    return Model.Posts.find({}, options).map(function(post) {
       post._rank = i;
       i += 1;
       return post;
     });
   },
   posts: function () {
-    return Posts.find({}, {sort: this.sort, limit: this.handle.limit()});
+    return Model.Posts.find({}, {sort: this.sort, limit: this.handle.limit()});
   },
   postsReady: function () {
     return this.handle.ready();
   },
   allPostsLoaded: function () {
-    return this.handle.ready() && Posts.find().count() < this.handle.loaded();
+    return this.handle.ready() && Model.Posts.find().count() < this.handle.loaded();
   } });
 
 Template.postsList.events({

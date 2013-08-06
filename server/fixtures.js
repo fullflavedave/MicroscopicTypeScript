@@ -1,5 +1,5 @@
 // Fixture data
-if (Posts.find().count() === 0) {
+if (Model.Posts.find().count() === 0) {
   var now = new Date().getTime();
 
   // create two users
