@@ -3,14 +3,14 @@
 /// <reference path='notifications.ts'/>
 /// <reference path='../lib/typescript/meteor-typed-0.6.4.1.d.ts'>
 
-module Model {
+module CommentsModel {
   export var Comments = new Meteor.Collection('comments');
 };
 
 Meteor.methods({
   insertComment: function (commentAttributes: CommentInterface) {
     var user = Meteor.user();
-    var post = Model.Posts.findOne(commentAttributes.postId); // ensure the user is logged in
+    var post = PostsModel.Posts.findOne(commentAttributes.postId); // ensure the user is logged in
 
     // ensure the user is logged in
     if (!user)
@@ -27,13 +27,13 @@ Meteor.methods({
       submitted: new Date().getTime()
     });
 
-    Model.Posts.update(comment.postId, {$inc: {commentsCount: 1}});
+    PostsModel.Posts.update(comment.postId, {$inc: {commentsCount: 1}});
 
     // create the comment, save the id
-    comment._id = Model.Comments.insert(comment);
+    comment._id = CommentsModel.Comments.insert(comment);
 
     // now create a notification, informing the user that there's been a comment
-    Model.createCommentNotification(comment);
+    NotificationsModel.createCommentNotification(comment);
 
     return comment._id;
   }
@@ -44,4 +44,4 @@ interface CommentInterface {
   body: String;
 };
 
-this.Model = Model;
+this.CommentsModel = CommentsModel;

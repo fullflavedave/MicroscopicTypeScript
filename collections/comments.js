@@ -1,13 +1,13 @@
-var Model;
-(function (Model) {
-    Model.Comments = new Meteor.Collection('comments');
-})(Model || (Model = {}));
+var CommentsModel;
+(function (CommentsModel) {
+    CommentsModel.Comments = new Meteor.Collection('comments');
+})(CommentsModel || (CommentsModel = {}));
 ;
 
 Meteor.methods({
     insertComment: function (commentAttributes) {
         var user = Meteor.user();
-        var post = Model.Posts.findOne(commentAttributes.postId);
+        var post = PostsModel.Posts.findOne(commentAttributes.postId);
 
         if (!user)
             throw new Meteor.Error(401, "You need to login to make comments");
@@ -24,11 +24,11 @@ Meteor.methods({
             submitted: new Date().getTime()
         });
 
-        Model.Posts.update(comment.postId, { $inc: { commentsCount: 1 } });
+        PostsModel.Posts.update(comment.postId, { $inc: { commentsCount: 1 } });
 
-        comment._id = Model.Comments.insert(comment);
+        comment._id = CommentsModel.Comments.insert(comment);
 
-        Model.createCommentNotification(comment);
+        NotificationsModel.createCommentNotification(comment);
 
         return comment._id;
     }
@@ -36,5 +36,5 @@ Meteor.methods({
 
 ;
 
-this.Model = Model;
+this.CommentsModel = CommentsModel;
 //@ sourceMappingURL=comments.js.map

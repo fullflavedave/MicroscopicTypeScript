@@ -1,16 +1,16 @@
-var Model;
-(function (Model) {
-    Model.Notifications = new Meteor.Collection('notifications');
+var NotificationsModel;
+(function (NotificationsModel) {
+    NotificationsModel.Notifications = new Meteor.Collection('notifications');
 
     var docPermissions = new Permissions.DocPermissions();
 
-    Model.Notifications.allow({
+    NotificationsModel.Notifications.allow({
         update: docPermissions.ownsDocument
     });
 
-    Model.createCommentNotification = function (comment) {
-        var post = Model.Posts.findOne(comment.postId);
-        Model.Notifications.insert({
+    NotificationsModel.createCommentNotification = function (comment) {
+        var post = PostsModel.Posts.findOne(comment.postId);
+        NotificationsModel.Notifications.insert({
             userId: post.userId,
             postId: post._id,
             commentId: comment._id,
@@ -18,7 +18,7 @@ var Model;
             read: false
         });
     };
-})(Model || (Model = {}));
+})(NotificationsModel || (NotificationsModel = {}));
 
-this.Model = Model;
+this.NotificationsModel = NotificationsModel;
 //@ sourceMappingURL=notifications.js.map

@@ -1,12 +1,12 @@
-var Model;
-(function (Model) {
-    Model.Posts = new Meteor.Collection('posts');
-})(Model || (Model = {}));
+var PostsModel;
+(function (PostsModel) {
+    PostsModel.Posts = new Meteor.Collection('posts');
+})(PostsModel || (PostsModel = {}));
 ;
 
 Meteor.methods({
     insertPost: function (postAttributes) {
-        var user = Meteor.user(), postWithSameLink = Model.Posts.findOne({ url: postAttributes.url });
+        var user = Meteor.user(), postWithSameLink = PostsModel.Posts.findOne({ url: postAttributes.url });
 
         if (!user)
             throw new Meteor.Error(401, "You need to login to post new stories");
@@ -27,7 +27,7 @@ Meteor.methods({
             votes: 0
         });
 
-        var postId = Model.Posts.insert(post);
+        var postId = PostsModel.Posts.insert(post);
 
         return postId;
     },
@@ -37,7 +37,7 @@ Meteor.methods({
         if (!user)
             throw new Meteor.Error(401, "You need to login to upvote");
 
-        Model.Posts.update({
+        PostsModel.Posts.update({
             _id: postId,
             upvoters: { $ne: user._id }
         }, {
@@ -47,5 +47,5 @@ Meteor.methods({
     }
 });
 
-this.Model = Model;
+this.PostsModel = PostsModel;
 //@ sourceMappingURL=posts.js.map

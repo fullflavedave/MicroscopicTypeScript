@@ -2,19 +2,19 @@
 /// <reference path='posts.ts'/>
 /// <reference path='../lib/typescript/meteor-typed-0.6.4.1.d.ts'>
 
-module Model {
+module NotificationsModel {
 
   export var Notifications = new Meteor.Collection('notifications');
 
   var docPermissions = new Permissions.DocPermissions();
 
-  Model.Notifications.allow({
+  NotificationsModel.Notifications.allow({
     update: docPermissions.ownsDocument
   });
 
   export var createCommentNotification = function (comment) {
-    var post = Model.Posts.findOne(comment.postId);
-    Model.Notifications.insert({
+    var post = PostsModel.Posts.findOne(comment.postId);
+    NotificationsModel.Notifications.insert({
       userId: post.userId,
       postId: post._id,
       commentId: comment._id,
@@ -25,4 +25,4 @@ module Model {
 
 }
 
-this.Model = Model;
+this.NotificationsModel = NotificationsModel;

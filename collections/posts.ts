@@ -2,14 +2,14 @@
 /// <reference path='../lib/typescript/meteor-typed-0.6.4.1.d.ts'/>
 /// <reference path='../lib/permissions.ts'/>
 
-module Model {
+module PostsModel {
   export var Posts = new Meteor.Collection('posts');
 };
 
 Meteor.methods({
   insertPost: function (postAttributes) {
 
-    var user = Meteor.user(), postWithSameLink = Model.Posts.findOne({url: postAttributes.url});
+    var user = Meteor.user(), postWithSameLink = PostsModel.Posts.findOne({url: postAttributes.url});
 
     // ensure the user is logged in
     if (!user)
@@ -34,7 +34,7 @@ Meteor.methods({
       votes: 0
     });
 
-    var postId = Model.Posts.insert(post);
+    var postId = PostsModel.Posts.insert(post);
 
     return postId;
   },
@@ -46,7 +46,7 @@ Meteor.methods({
     if (!user)
       throw new Meteor.Error(401, "You need to login to upvote");
 
-    Model.Posts.update({
+    PostsModel.Posts.update({
       _id: postId,
       upvoters: {$ne: user._id}
     }, {
@@ -56,4 +56,4 @@ Meteor.methods({
   }
 });
 
-this.Model = Model;
+this.PostsModel = PostsModel;
