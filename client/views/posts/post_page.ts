@@ -1,5 +1,5 @@
 /// <reference path='../../../lib/typescript/meteor-typed-0.6.4.1.d.ts'/>
-/// <reference path='../../../lib/typescript/template-types.d.ts'/>
+/// <reference path='../view-model-types.d.ts'/>
 /// <reference path='../../../collections/posts.ts'/>
 /// <reference path='../../../collections/comments.ts'/>
 
