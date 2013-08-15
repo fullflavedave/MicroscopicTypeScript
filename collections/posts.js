@@ -4,6 +4,17 @@ var PostsModel;
 })(PostsModel || (PostsModel = {}));
 ;
 
+PostsModel.Posts.deny({
+    update: function (userId, post, fieldNames) {
+        return (_.without(fieldNames, 'url', 'title', 'message').length > 0);
+    }
+});
+
+PostsModel.Posts.allow({
+    update: Permissions.ownsDocument,
+    remove: Permissions.ownsDocument
+});
+
 Meteor.methods({
     insertPost: function (postAttributes) {
         var user = Meteor.user(), postWithSameLink = PostsModel.Posts.findOne({ url: postAttributes.url });

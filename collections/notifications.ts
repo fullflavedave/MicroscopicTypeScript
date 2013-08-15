@@ -6,10 +6,8 @@ module NotificationsModel {
 
   export var Notifications = new Meteor.Collection('notifications');
 
-  var docPermissions = new Permissions.DocPermissions();
-
   NotificationsModel.Notifications.allow({
-    update: docPermissions.ownsDocument
+    update: Permissions.ownsDocument
   });
 
   export var createCommentNotification = function (comment) {
