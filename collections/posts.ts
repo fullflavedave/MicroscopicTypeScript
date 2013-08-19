@@ -1,4 +1,4 @@
-/// <reference path='../lib/typescript/meteor-typed-0.6.4.1.d.ts'/>
+/// <reference path='../lib/typescript/meteor.d.ts'/>
 /// <reference path='../lib/typescript/underscore-typed-1.4.3.d.ts'/>
 /// <reference path='../lib/permissions.ts'/>
 

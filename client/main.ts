@@ -1,4 +1,4 @@
-/// <reference path='../lib/typescript/meteor-typed-0.6.4.1.d.ts'/>
+/// <reference path='../lib/typescript/meteor.d.ts'/>
 
 module Handles {
   export var newPostsHandle = Meteor.subscribeWithPagination('newPosts', 10);

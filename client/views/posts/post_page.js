@@ -6,4 +6,3 @@ Template.postPage.helpers({
         return CommentsModel.Comments.find({ postId: this._id });
     }
 });
-//@ sourceMappingURL=post_page.js.map

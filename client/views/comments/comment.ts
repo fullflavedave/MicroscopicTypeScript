@@ -1,4 +1,4 @@
-/// <reference path='../../../lib/typescript/meteor-typed-0.6.4.1.d.ts'/>
+/// <reference path='../view-model-types.d.ts'/>
 
 Template.comment.helpers({
   submittedText: function () {

@@ -34,4 +34,3 @@ Template.postEdit.events({
         }
     }
 });
-//@ sourceMappingURL=post_edit.js.map

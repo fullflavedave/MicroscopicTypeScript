@@ -1,3 +1,8 @@
+/// <reference path='../../../lib/typescript/meteor.d.ts'/>
+/// <reference path='../view-model-types.d.ts'/>
+/// <reference path='../../../lib/typescript/jquery.d.ts'/>
+
+
 Template.commentSubmit.events({
   'submit form': function (event, template) {
     event.preventDefault();
@@ -8,7 +13,7 @@ Template.commentSubmit.events({
     };
 
     Meteor.call('insertComment', comment, function (error, commentId) {
-      error && throwError(error.reason);
+      error && Meteor.Errors.throw(error.reason);
     });
   }
 });

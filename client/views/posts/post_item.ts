@@ -1,3 +1,8 @@
+/// <reference path='../../../lib/typescript/meteor.d.ts'/>
+/// <reference path='../../../lib/typescript/underscore-typed-1.4.3.d.ts'/>
+/// <reference path='../view-model-types.d.ts'/>
+/// <reference path='../../../lib/typescript/jquery.d.ts'/>
+
 Template.postItem.helpers({
   ownPost: function() {
     return this.userId == Meteor.userId();
@@ -56,4 +61,3 @@ Template.postItem.events({
     Meteor.call('upvote', this._id);
   }
 });
-
