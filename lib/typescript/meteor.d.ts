@@ -1,3 +1,9 @@
+/**
+ * Todo:
+ * Need to come back to this.functions
+ * How to define the signature of callback function and other functions
+ * **/
+
 interface IMeteor {
 
   /********
@@ -60,8 +66,12 @@ interface IMeteor {
   loginWithExternalService(options: IExternalServiceOptions, callback?: Function): void;
 
   /**
-   * Passwords
+   * Timers
    */
+  setTimeout(func: Function, delay: number): void;
+  setInterval(func: Function, delay: number): void;
+  clearTimeout(id: number): void;
+  clearInterval(id: number): void;
 
 
   /******************** Begin types from contributed packages on Atmosphere (or elsewhere) **************************/
@@ -88,12 +98,32 @@ interface IMeteor {
 
 /******************** Begin types from contributed packages on Atmosphere (or elsewhere) **************************/
 
+/**
+ * Router and Iron-Router packages
+ */
 interface IRouter {
+
+  // These are for Router
   page(): void;
   add(route: Object): void;
   to(path: string, ...args: any[]): void;
   filters(filtersMap: Object);
   filter(filterName: string, options?: Object);
+
+  // These are for Iron-Router
+  map(routeMap: Function): void;
+  path(route: string, params?: Object): void;
+  url(route: string): void;
+  routes: Object;
+  configure(options: IRouterConfiguration): void;
+}
+
+// For Iron-Router
+interface IRouterConfiguration {
+  layout: string;
+  notFoundTemplate: string;
+  loadingTemplate: string;
+  renderTemplates: Object;
 }
 
 interface IErrors {
@@ -198,6 +228,22 @@ interface IAccounts {
   }
   validateNewUser(func: Function): void;
   onCreateUser(func: Function): void;
+  createUser(options: ICreateUserOptions, callback?: Function): void;
+  changePassword(oldPassword: string, newPassword: string, callback?: Function): void;
+  forgotPassword(options: IForgotPasswordOptions, callback?: Function): void;
+  resetPassword(token: string, newPassword: string, callback?: Function): void;
+  setPassword(userId: string, newPassword: string): void;
+  verifyEmail(token: string, callback?: Function): void;
+  sendResetPasswordEmail(userId: string, email?: string): void;
+  sendEnrollmentEmail(userId: string, email?: string): void;
+  sendVerificationEmail(userId: string, email?: string): void;
+  emailTemplates: {
+    from: string;
+    siteName: string;
+    resetPassword: IEmailValues;
+    enrollAccount: IEmailValues;
+    verifyEmail: IEmailValues;
+  }
 }
 
 interface IExternalServiceOptions {
@@ -217,6 +263,135 @@ interface IAccountConfigUIOptions {
   passwordSignupFields?: string;
 }
 
+interface ICreateUserOptions {
+  username?: string;
+  email?: string;
+  password?: string;
+  profile?: string;
+}
+
+interface IForgotPasswordOptions {
+  email: string;
+}
+
+interface IEmailValues {
+  subject?: Function;
+  text?: Function;
+}
+
+interface Match {
+  test(value: any, pattern: any): boolean;
+}
+
+/**
+ * Deps
+ */
+interface Deps {
+  autorun(runFunc: Function): IComputationObject;
+  flush(): void;
+  nonreactive(func: Function): void;
+  active: boolean;
+  currentComputation: IComputationObject;
+  onInvalidate(callback: Function): void;
+  afterFlush(callback: Function): void;
+
+  /**
+   * @constructor
+   */
+  Computation(): void;
+
+  /**
+   * @constructor
+   */
+  Dependency(): void;
+}
+
+interface IComputationObject {
+  stop(): void;
+  invalidate(): void;
+  onInvalidate(callback: Function): void;
+  stopped: boolean;
+  invalidated: boolean;
+  firstRun: boolean;
+}
+
+interface IDependencyObject {
+  changed(): void;
+  depend(fromComputation?: IComputationObject): boolean;
+  hasDependents(): boolean;
+}
+
+/**
+ * EJSON
+ */
+interface EJSON {
+  parse(str: string): void;
+  stringify(val: any): string;
+  fromJSONValue(val): any;
+  toJSONValue(val): JSON;
+  equals(any: any): boolean;
+  clone(val: any): any;
+  newBinary(size: number): void;
+  isBinary(x: any): boolean;
+  addType(name: string, factory: Function): void;
+}
+
+/**
+ * HTTP package
+ */
+interface HTTP {
+  call(method: string, url: string, options?: IHTTPCallOptions, asyncCallback?: Function): IHTTPResultObject;
+  get(url: string, options?: IHTTPCallOptions, asyncCallback?: Function): IHTTPResultObject;
+  post(url: string, options?: IHTTPCallOptions, asyncCallback?: Function): IHTTPResultObject;
+  put(url: string, options?: IHTTPCallOptions, asyncCallback?: Function): IHTTPResultObject;
+  del(url: string, options?: IHTTPCallOptions, asyncCallback?: Function): IHTTPResultObject;
+}
+
+interface IHTTPCallOptions {
+  content?: string;
+  data?: Object;
+  query?: string;
+  params?: Object;
+  auth?: string;
+  headers?: Object;
+  timeout?: number;
+  followRedirects?: boolean;s
+}
+
+interface IHTTPResultObject {
+  statusCode: number;
+  content: string;
+  data?: JSON;
+  headers: Object;
+}
+
+/**
+ * Email
+ */
+interface Email {
+  send(options: IEmailOptions): void;
+}
+
+interface IEmailOptions {
+  from: string;
+  to: any;
+  cc: any;
+  bcc: any;
+  replyTo: any;
+  subject: string;
+  text: string;
+  html: string;
+  headers: Object;
+}
+
+/**
+ * Assets
+ */
+interface Assets {
+  getText(assetPath: string, asyncCallback?: Function): string;
+  getBinary(assetPath: string, asyncCallback?: Function): any;
+}
+
 /**
  * DPP
  */
@@ -229,7 +404,11 @@ declare var Collection: ICollection;
 declare var Session: ISession;
 declare var Deps: IDeps;
 declare var Accounts: IAccounts;
+
+
+
+declare function check(value: any, pattern: any): void;
+declare var Computation: IComputationObject;
+declare var Dependency: IDependencyObject;
 declare var DPP: IDPP;
 declare var Router: IRouter;
-
-
