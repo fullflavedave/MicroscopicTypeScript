@@ -17,4 +17,3 @@ Meteor.publish('comments', function (postId) {
 Meteor.publish('notifications', function () {
     return NotificationsModel.Notifications.find({ userId: this.userId });
 });
-//@ sourceMappingURL=publications.js.map

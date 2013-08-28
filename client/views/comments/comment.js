@@ -3,4 +3,3 @@ Template.comment.helpers({
         return new Date(this.submitted).toString();
     }
 });
-//@ sourceMappingURL=comment.js.map

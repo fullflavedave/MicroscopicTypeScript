@@ -50,4 +50,3 @@ Meteor.Router.filters({
 
 Meteor.Router.filter('requireLogin', { only: 'postNew' });
 Meteor.Router.filter('clearErrors');
-//@ sourceMappingURL=router.js.map

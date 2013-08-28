@@ -1,13 +1,8 @@
 // Type definitions for Meteor 0.6.5
-// Project: Meteor
+// Project: http://www.meteor.com/
 // Definitions by: Dave Allen <https://github.com/fullflavedave>
 // Definitions: https://github.com/borisyankov/DefinitelyTyped
 
-/**
- * Todo:
- * Need to come back to this.functions
- * How to define the signature of callback function and other functions
- * **/
 
 interface IMeteor {
 
@@ -30,8 +25,28 @@ interface IMeteor {
   /*************************
    * Publish and Subscribe *
    *************************/
-  publish(name: string, func: Function): void;
-  subscribe(name: string, arg1?: any, arg2?: any, ars3?: any, arg4?: any, callbacks?: Function[]): IMeteorHandle;
+
+  /**
+   * Publish a record set.
+   *
+   * @param name Name of the attribute set. If null, the set has no name, and the record set is
+   *             automatically sent to all connected clients.
+   * @param func Function called on the server each time a client subscribes. Inside the function,
+   *             this is the publish handler object, described below. If the client passed arguments
+   *             to subscribe, the function is called with the same arguments.
+   */
+  publish(name: string, func: Function): any;
+  //Todo: Figure out a way to define this.userId, this.added, this.changed, etc that can be called from within publish
+
+  /**
+   * Subscribe to a record set. Returns a handle that provides stop() and ready() methods.
+   *
+   * @param name Name of the subscription. Matches name of server's publish() call.
+   * @param arg1,arg2,arg3 Optional arguments passed to publisher function on server.
+   * @param callbacks Optional. May include onError and onReady callbacks. Can be Object or Function.  If a function
+   *                  is passed instead of an object, it is interpreted as an onReady callback.
+   */
+  subscribe(name: string, arg1?: any, arg2?: any, ars3?: any, arg4?: any, callbacks?: Object): IMeteorHandle;
 
 
   /***********
@@ -39,7 +54,9 @@ interface IMeteor {
    ***********/
   methods(methods: Object): void;
   Error(error: number, reason?: string, details?: string): void;
-  call(name: string, param1?: any, param2?: any, param3?: any, asyncCallback?: Function): void;
+  // DA: Really should be defined like this:  call(name: string, ...args?: any[], asyncCallback?: Function): void;
+  // But typescript does not allow Rest parameter (..args) to not be the last parameter defined
+  call(name: string, param1?: Object, param2?: Object, param3?: Object, param4?: Object, asyncCallback?: Function): void;
   apply(name: string, options: any[], asyncCallback?: Function): void;
   defer(callback: Function): void;
 
@@ -72,18 +89,70 @@ interface IMeteor {
   /************
    * Accounts *
    ************/
-  user(): IMeteorUser;
+  user(): {
+    _id: string;
+    username: string;
+    emails?: {
+      address: string;
+      verified: boolean;
+    }
+    profile?: Object;
+    services?: Object;
+    createdAt?: number;
+  };
   userId(): string;
   users: IMeteorCollection;
   loggingIn(): boolean;
   logout(callback?: Function): void;
   loginWithPassword(user: Object, password: string, callback?: Function): void;
-  loginWithExternalService(options: {
+  loginWithExternalService(options?: {
                              requestPermissions?: string[];
                              requestOfflineToken?: boolean;
                              forceApprovalPrompt?: boolean;
                            },
                            callback?: Function): void;
+  loginWithFacebook(options?: {
+                      requestPermissions?: string[];
+                      requestOfflineToken?: boolean;
+                      forceApprovalPrompt?: boolean;
+                    },
+                    callback?: Function): void;
+  loginWithGithub(options?: {
+                    requestPermissions?: string[];
+                    requestOfflineToken?: boolean;
+                    forceApprovalPrompt?: boolean;
+                  },
+                  callback?: Function): void;
+  loginWithGoogle(options?: {
+                    requestPermissions?: string[];
+                    requestOfflineToken?: boolean;
+                    forceApprovalPrompt?: boolean;
+                  },
+                  callback?: Function): void;
+  loginWithMeetup(options?: {
+                    requestPermissions?: string[];
+                    requestOfflineToken?: boolean;
+                    forceApprovalPrompt?: boolean;
+                  },
+                  callback?: Function): void;
+  loginWithTwitter(options?: {
+                    requestPermissions?: string[];
+                    requestOfflineToken?: boolean;
+                    forceApprovalPrompt?: boolean;
+                  },
+                   callback?: Function): void;
+  loginWithWeibo(options?: {
+                    requestPermissions?: string[];
+                    requestOfflineToken?: boolean;
+                    forceApprovalPrompt?: boolean;
+                  },
+                   callback?: Function): void;
+
+  /*************
+   * Templates *
+   *************/
+  render(htmlFunc: Function): DocumentFragment;
+  renderList(observable: IMeteorCursor, docFunc: Function, elseFunc?: Function): DocumentFragment;
 
   /**********
    * Timers *
@@ -121,7 +190,7 @@ interface IMeteor {
  * Collections *
  ***************/
 interface IMeteorCollection {
-  find(selector, options?: Object): IMeteorCursor;
+  find(selector?, options?: Object): IMeteorCursor;
   findOne(selector, options?: Object): Object;
   insert(doc, callback?: Function): number;
   update(selector, modifier, options?: Object, callback?: Function): void;
@@ -141,10 +210,6 @@ interface IMeteorCursor {
   observeChanges(callbacks: Object): void;
 }
 
-interface IMeteorUser {
-  _id: number;
-  username: number;
-}
 
 /*************
  * Templates *
@@ -166,19 +231,41 @@ interface IMeteorUser {
  *           declare var Template: ITemplate;
  */
 interface IMeteorViewModel {
-  helpers(helpers: Object): Object;
-  events(eventMap: {
-    [eventType: string]: Function
-  }): void;
   rendered(callback: Function): void;
+  created(callback: Function): void;
+  destroyed(callback: Function): void;
+  events(eventMap: {[eventName: string]: Function;}): void;
+  helpers(helpers: Object): void;
+  preserve(selector: Object): void;
 }
 
 interface IMeteorManager {
-  helpers(helpers: Object): Object;
-  events(eventMap: {
-    [eventType: string]: Function
-  }): void;
   rendered(callback: Function): void;
+  created(callback: Function): void;
+  destroyed(callback: Function): void;
+  events(eventMap: {[eventType: string]: Function}): void;
+  helpers(helpers: Object): Object;
+  preserve(selector: Object): void;
+}
+
+// DA: Currently not used, but I'd like to figure out a way to define the function signature
+// for teh callbacks in IMeteorViewModel, IMeteorManager, and many other interfaces
+interface IMeteorEvent {
+  type?: MeteorEventType.Value;
+  target?: Element;
+  currentTarget?: Element;
+  which?: number;
+  stopPropogation(): void;
+  stopImmediatePropogation(): void;
+  preventDefault(): void;
+  isPropogationStopped(): boolean;
+  isImmediatePropogationStopped(): boolean;
+  isDefaultPrevented(): boolean;
+}
+
+declare module MeteorEventType {
+  export enum Value {'click', 'dblclick', 'focus', 'blur', 'change',
+      'mouseenter', 'mouseleave', 'mousedown', 'mouseup', 'keydown', 'keypress', 'keyup', 'tap'}
 }
 
 /***********
@@ -203,7 +290,7 @@ interface IMeteorHandle {
  **************************/
 interface IMeteorAccounts {
   config(options: {
-           sendVerificaitonEmail?: boolean;
+           sendVerificationEmail?: boolean;
            forbidClientAccountCreation?: boolean;
          }): void;
   ui: {
@@ -240,6 +327,11 @@ interface IMeteorAccounts {
     enrollAccount: IMeteorEmailValues;
     verifyEmail: IMeteorEmailValues;
   }
+  // DA: I didn't see the signature for this, but it appears in the examples
+  loginServiceConfiguration: {
+    remove(options: Object): void;
+    insert(options: Object): void;
+  }
 }
 
 interface IMeteorEmailValues {
@@ -249,6 +341,27 @@ interface IMeteorEmailValues {
 
 interface IMeteorMatch {
   test(value: any, pattern: any): boolean;
+  Any;
+  String;
+  Number;
+  Boolean;
+  undefined;
+  null;
+  Integer;
+  ObjectIncluding;
+  Object;
+  Optional(pattern: string);
+  OneOf(...args: string[]);
+  Where(condition: boolean);
+}
+
+interface IExternalServiceParams {
+  options?: {
+    requestPermissions?: string[];
+    requestOfflineToken?: boolean;
+    forceApprovalPrompt?: boolean;
+  }
+  callback?: Function;
 }
 
 /********
@@ -308,13 +421,61 @@ interface IMeteorEJSON {
  * HTTP package *
  ****************/
 interface IMeteorHTTP {
-  call(method: string, url: string, options?: IMeteorHTTPCallOptions, asyncCallback?: Function): IMeteorHTTPResult;
-  get(url: string, options?: IMeteorHTTPCallOptions, asyncCallback?: Function): IMeteorHTTPResult;
-  post(url: string, options?: IMeteorHTTPCallOptions, asyncCallback?: Function): IMeteorHTTPResult;
-  put(url: string, options?: IMeteorHTTPCallOptions, asyncCallback?: Function): IMeteorHTTPResult;
-  del(url: string, options?: IMeteorHTTPCallOptions, asyncCallback?: Function): IMeteorHTTPResult;
+  call(method: string, url: string, options: {
+    content?: string;
+    data?: Object;
+    query?: string;
+    params?: Object;
+    auth?: string;
+    headers?: Object;
+    timeout?: number;
+    followRedirects?: boolean;
+  }, asyncCallback?: Function): IMeteorHTTPResult;
+  get(url: string, options?: {
+    content?: string;
+    data?: Object;
+    query?: string;
+    params?: Object;
+    auth?: string;
+    headers?: Object;
+    timeout?: number;
+    followRedirects?: boolean;
+  }, asyncCallback?: Function): IMeteorHTTPResult;
+  post(url: string, options?: {
+    content?: string;
+    data?: Object;
+    query?: string;
+    params?: Object;
+    auth?: string;
+    headers?: Object;
+    timeout?: number;
+    followRedirects?: boolean;
+  }, asyncCallback?: Function): IMeteorHTTPResult;
+  put(url: string, options?: {
+    content?: string;
+    data?: Object;
+    query?: string;
+    params?: Object;
+    auth?: string;
+    headers?: Object;
+    timeout?: number;
+    followRedirects?: boolean;
+  }, asyncCallback?: Function): IMeteorHTTPResult;
+  del(url: string, options?: {
+    content?: string;
+    data?: Object;
+    query?: string;
+    params?: Object;
+    auth?: string;
+    headers?: Object;
+    timeout?: number;
+    followRedirects?: boolean;
+  }, asyncCallback?: Function): IMeteorHTTPResult;
 }
 
+// DA: Currently not used
+// I would like to figure out a way to specify this as type for options for IMeteorHTTP methods.
+// Tests don't work if I simply specify this interface as the type.
 interface IMeteorHTTPCallOptions {
   content?: string;
   data?: Object;
@@ -323,7 +484,7 @@ interface IMeteorHTTPCallOptions {
   auth?: string;
   headers?: Object;
   timeout?: number;
-  followRedirects?: boolean;s
+  followRedirects?: boolean;
 }
 
 interface IMeteorHTTPResult {
@@ -381,6 +542,7 @@ declare var Email: IMeteorEmail;
 declare var Assets: IMeteorAssets;
 declare var DPP: IMeteorDPP;
 
+declare function changed(collection: string, id: string, fields, Object): void;
 
 /******************** Begin definitions for contributed packages from Atmosphere (or elsewhere) *********************/
 
@@ -421,3 +583,9 @@ interface IMeteorErrors {
 declare var Router: IMeteorRouter;
 
 /******************** End definitions for contributed packages from Atmosphere (or elsewhere) ***********************/
+
+/**
+ * Todo:
+ * Define "this.function" functions.
+ * Define the signatures of callback functions and other functions.
+ ***/

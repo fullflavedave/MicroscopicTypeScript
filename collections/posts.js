@@ -59,4 +59,3 @@ Meteor.methods({
 });
 
 this.PostsModel = PostsModel;
-//@ sourceMappingURL=posts.js.map

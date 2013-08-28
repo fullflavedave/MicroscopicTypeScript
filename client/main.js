@@ -13,4 +13,3 @@ Deps.autorun(function () {
 Meteor.subscribe('notifications');
 
 this.Handles = Handles;
-//@ sourceMappingURL=main.js.map

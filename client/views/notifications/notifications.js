@@ -12,4 +12,3 @@ Template.notifications.events({
         NotificationsModel.Notifications.update(this._id, { $set: { read: true } });
     }
 });
-//@ sourceMappingURL=notifications.js.map
