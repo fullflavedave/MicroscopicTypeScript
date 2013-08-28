@@ -10,3 +10,4 @@ Template.header.helpers({
         return active && 'active';
     }
 });
+//@ sourceMappingURL=header.js.map

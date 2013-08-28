@@ -42,3 +42,4 @@ Template.postsList.events({
         this.handle.loadNextPage();
     }
 });
+//@ sourceMappingURL=posts_list.js.map

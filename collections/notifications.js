@@ -19,3 +19,4 @@ var NotificationsModel;
 })(NotificationsModel || (NotificationsModel = {}));
 
 this.NotificationsModel = NotificationsModel;
+//@ sourceMappingURL=notifications.js.map

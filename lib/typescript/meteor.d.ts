@@ -1,3 +1,8 @@
+// Type definitions for Meteor 0.6.5
+// Project: Meteor
+// Definitions by: Dave Allen <https://github.com/fullflavedave>
+// Definitions: https://github.com/borisyankov/DefinitelyTyped
+
 /**
  * Todo:
  * Need to come back to this.functions
@@ -12,7 +17,12 @@ interface IMeteor {
   isClient: boolean;
   isServer: boolean;
   startup(func: Function): void;
-  absoluteUrl(path: string, options: IAbsoluteURLOptions): void;
+  absoluteUrl(path: string,
+              options: {
+                secure?: boolean;
+                replaceLocalhost?: boolean;
+                rootUrl?: string;
+              }): void;
   settings: Object;
   release: string;
 
@@ -21,7 +31,7 @@ interface IMeteor {
    * Publish and Subscribe *
    *************************/
   publish(name: string, func: Function): void;
-  subscribe(name: string, arg1?: any, arg2?: any, ars3?: any, arg4?: any, callbacks?: Function[]): IHandle;
+  subscribe(name: string, arg1?: any, arg2?: any, ars3?: any, arg4?: any, callbacks?: Function[]): IMeteorHandle;
 
 
   /***********
@@ -51,102 +61,67 @@ interface IMeteor {
   /***************
    * Collections *
    ***************/
-  Collection(name: string, options?: ICollectionOptions): void;
+  Collection(name: string,
+             options?: {
+               connection?: Object;
+               idGeneration?: string;
+               transform?: Function;
+             }): void;
 
 
   /************
    * Accounts *
    ************/
-  user(): IUser;
+  user(): IMeteorUser;
   userId(): string;
-  users: ICollection;
+  users: IMeteorCollection;
   loggingIn(): boolean;
   logout(callback?: Function): void;
   loginWithPassword(user: Object, password: string, callback?: Function): void;
-  loginWithExternalService(options: IExternalServiceOptions, callback?: Function): void;
+  loginWithExternalService(options: {
+                             requestPermissions?: string[];
+                             requestOfflineToken?: boolean;
+                             forceApprovalPrompt?: boolean;
+                           },
+                           callback?: Function): void;
 
-  /**
-   * Timers
-   */
+  /**********
+   * Timers *
+   **********/
   setTimeout(func: Function, delay: number): void;
   setInterval(func: Function, delay: number): void;
   clearTimeout(id: number): void;
   clearInterval(id: number): void;
 
 
-  /******************** Begin types from contributed packages on Atmosphere (or elsewhere) **************************/
+  /******************** Begin definitions for contributed packages from Atmosphere (or elsewhere) *******************/
 
   /**************************************************
-   * For contributed package paginated-subscription *
+   * For Paginated-Subscription contributed package *
    **************************************************/
-  subscribeWithPagination(collection: string, limit: number): IHandle;
+  subscribeWithPagination(collection: string, limit: number): IMeteorHandle;
   Template(): void;
 
-  /**
-   * For contributed package router *
-   */
-  Router: IRouter;
+  /*************************************************
+   * For Router or Iron-Router contributed package *
+   *************************************************/
+  Router: IMeteorRouter;
 
-  /**
-   * For contributed package error
-   */
-  Errors: IErrors;
+  /*********************************
+   * For Error contributed package *
+   *********************************/
+  Errors: IMeteorErrors;
 
-  /******************** End types from contributed packages on Atmosphere (or elsewhere) **************************/
+  /******************** End definitions for contributed packages from Atmosphere (or elsewhere) *********************/
 
-}
+}  // End Meteor.someFunction definitions
 
-/******************** Begin types from contributed packages on Atmosphere (or elsewhere) **************************/
 
-/**
- * Router and Iron-Router packages
- */
-interface IRouter {
-
-  // These are for Router
-  page(): void;
-  add(route: Object): void;
-  to(path: string, ...args: any[]): void;
-  filters(filtersMap: Object);
-  filter(filterName: string, options?: Object);
-
-  // These are for Iron-Router
-  map(routeMap: Function): void;
-  path(route: string, params?: Object): void;
-  url(route: string): void;
-  routes: Object;
-  configure(options: IRouterConfiguration): void;
-}
-
-// For Iron-Router
-interface IRouterConfiguration {
-  layout: string;
-  notFoundTemplate: string;
-  loadingTemplate: string;
-  renderTemplates: Object;
-}
-
-interface IErrors {
-  throw(message: string): void;
-  clear(): void;
-}
-
-/******************** End types from contributed packages on Atmosphere (or elsewhere) **************************/
-
-/**
- * Core
- */
-interface IAbsoluteURLOptions {
-  secure: boolean;
-  replaceLocalhost: boolean;
-  rootUrl: string;
-}
-
-/**
- * Collections
- */
-interface ICollection {
-  find(selector, options?: Object): ICursor;
+/***************
+ * Collections *
+ ***************/
+interface IMeteorCollection {
+  find(selector, options?: Object): IMeteorCursor;
   findOne(selector, options?: Object): Object;
   insert(doc, callback?: Function): number;
   update(selector, modifier, options?: Object, callback?: Function): void;
@@ -156,13 +131,7 @@ interface ICollection {
   ObjectID(hexString?: string): Object;
 }
 
-interface ICollectionOptions {
-  connection?: Object;
-  idGeneration?: string;
-  transform?: Function;
-}
-
-interface ICursor {
+interface IMeteorCursor {
   forEach(callback: Function): void;
   map(callback: Function): void;
   fetch(): any[];
@@ -172,7 +141,7 @@ interface ICursor {
   observeChanges(callbacks: Object): void;
 }
 
-interface IUser {
+interface IMeteorUser {
   _id: number;
   username: number;
 }
@@ -182,55 +151,82 @@ interface IUser {
  *************/
 
 /**
- *  To use Template.templateName.function, you need to define an interface in a separate file (e.g. template-types.d.ts):
- *  e.g.   interface TemplateInterface {
- *           postsList: ViewModelInterface;
- *           comment: ViewModelInterface;
- *           notifications: ViewModelInterface;
- *           [your template name]: ViewModelInterface;
- *     }
- *     declare var Template: TemplateInterface;
+ *  To use Meteor's Template.templateName.function, you must define an interface in a separate file with
+ *  extension ".d.ts".  Within the interface, every template name must have a property by that name that
+ *  is of type IMeteorViewModel or IMeteorManager (choose either depending on your philosophical
+ *  preference -- both work the same)
+ *  e.g. file ".../client/views/view-model-types.d.ts":
+ *
+ *           interface ITemplate {
+ *             postsList: IMeteorViewModel;
+ *             comment: IMeteorViewModel;
+ *             notifications: IMeteorViewModel;
+ *             [your template name]: IMeteorViewModel;
+ *           }
+ *           declare var Template: ITemplate;
  */
-interface IViewModel {
+interface IMeteorViewModel {
   helpers(helpers: Object): Object;
-  events(eventMap: Object): void;
+  events(eventMap: {
+    [eventType: string]: Function
+  }): void;
+  rendered(callback: Function): void;
+}
+
+interface IMeteorManager {
+  helpers(helpers: Object): Object;
+  events(eventMap: {
+    [eventType: string]: Function
+  }): void;
   rendered(callback: Function): void;
 }
 
 /***********
  * Session *
  ***********/
-interface ISession {
+interface IMeteorSession {
   set(key: string, value: Object): void;
   setDefault(key: string, value: Object): void;
   get(key: string): Object;
   equals(key: string, value: any): void;
 }
 
-interface IHandle {
+interface IMeteorHandle {
   loaded(): number;
   limit(): number;
   ready(): boolean;
   loadNextPage(): void;
 }
 
-interface IDeps {
-  autorun(runFunc: Function): Object;
-}
-
 /**************************
  * Accounts and Passwords *
  **************************/
-interface IAccounts {
-  config(options: IAccountConfigOptions): void;
+interface IMeteorAccounts {
+  config(options: {
+           sendVerificaitonEmail?: boolean;
+           forbidClientAccountCreation?: boolean;
+         }): void;
   ui: {
-    config(options: IAccountConfigUIOptions);
+    config(options: {
+             requestPermissions?: Object;
+             requestOfflineToken?: Object;
+             passwordSignupFields?: string;
+           });
   }
   validateNewUser(func: Function): void;
   onCreateUser(func: Function): void;
-  createUser(options: ICreateUserOptions, callback?: Function): void;
+  createUser(options: {
+               username?: string;
+               email?: string;
+               password?: string;
+               profile?: string;
+             },
+             callback?: Function): void;
   changePassword(oldPassword: string, newPassword: string, callback?: Function): void;
-  forgotPassword(options: IForgotPasswordOptions, callback?: Function): void;
+  forgotPassword(options: {
+                     email: string
+                   },
+                 callback?: Function): void;
   resetPassword(token: string, newPassword: string, callback?: Function): void;
   setPassword(userId: string, newPassword: string): void;
   verifyEmail(token: string, callback?: Function): void;
@@ -240,58 +236,30 @@ interface IAccounts {
   emailTemplates: {
     from: string;
     siteName: string;
-    resetPassword: IEmailValues;
-    enrollAccount: IEmailValues;
-    verifyEmail: IEmailValues;
+    resetPassword: IMeteorEmailValues;
+    enrollAccount: IMeteorEmailValues;
+    verifyEmail: IMeteorEmailValues;
   }
 }
 
-interface IExternalServiceOptions {
-  requestPermissions?: string[];
-  requestOfflineToken?: boolean;
-  forceApprovalPrompt?: boolean;
-}
-
-interface IAccountConfigOptions {
-  sendVerificaitonEmail?: boolean;
-  forbidClientAccountCreation?: boolean;
-}
-
-interface IAccountConfigUIOptions {
-  requestPermissions?: Object;
-  requestOfflineToken?: Object;
-  passwordSignupFields?: string;
-}
-
-interface ICreateUserOptions {
-  username?: string;
-  email?: string;
-  password?: string;
-  profile?: string;
-}
-
-interface IForgotPasswordOptions {
-  email: string;
-}
-
-interface IEmailValues {
+interface IMeteorEmailValues {
   subject?: Function;
   text?: Function;
 }
 
-interface Match {
+interface IMeteorMatch {
   test(value: any, pattern: any): boolean;
 }
 
-/**
- * Deps
- */
-interface Deps {
-  autorun(runFunc: Function): IComputationObject;
+/********
+ * Deps *
+ ********/
+interface IMeteorDeps {
+  autorun(runFunc: Function): IMeteorComputationObject;
   flush(): void;
   nonreactive(func: Function): void;
   active: boolean;
-  currentComputation: IComputationObject;
+  currentComputation: IMeteorComputationObject;
   onInvalidate(callback: Function): void;
   afterFlush(callback: Function): void;
 
@@ -306,7 +274,7 @@ interface Deps {
   Dependency(): void;
 }
 
-interface IComputationObject {
+interface IMeteorComputationObject {
   stop(): void;
   invalidate(): void;
   onInvalidate(callback: Function): void;
@@ -315,16 +283,16 @@ interface IComputationObject {
   firstRun: boolean;
 }
 
-interface IDependencyObject {
+interface IMeteorDependencyObject {
   changed(): void;
-  depend(fromComputation?: IComputationObject): boolean;
+  depend(fromComputation?: IMeteorComputationObject): boolean;
   hasDependents(): boolean;
 }
 
-/**
- * EJSON
- */
-interface EJSON {
+/*********
+ * EJSON *
+ *********/
+interface IMeteorEJSON {
   parse(str: string): void;
   stringify(val: any): string;
   fromJSONValue(val): any;
@@ -336,18 +304,18 @@ interface EJSON {
   addType(name: string, factory: Function): void;
 }
 
-/**
- * HTTP package
- */
-interface HTTP {
-  call(method: string, url: string, options?: IHTTPCallOptions, asyncCallback?: Function): IHTTPResultObject;
-  get(url: string, options?: IHTTPCallOptions, asyncCallback?: Function): IHTTPResultObject;
-  post(url: string, options?: IHTTPCallOptions, asyncCallback?: Function): IHTTPResultObject;
-  put(url: string, options?: IHTTPCallOptions, asyncCallback?: Function): IHTTPResultObject;
-  del(url: string, options?: IHTTPCallOptions, asyncCallback?: Function): IHTTPResultObject;
+/****************
+ * HTTP package *
+ ****************/
+interface IMeteorHTTP {
+  call(method: string, url: string, options?: IMeteorHTTPCallOptions, asyncCallback?: Function): IMeteorHTTPResult;
+  get(url: string, options?: IMeteorHTTPCallOptions, asyncCallback?: Function): IMeteorHTTPResult;
+  post(url: string, options?: IMeteorHTTPCallOptions, asyncCallback?: Function): IMeteorHTTPResult;
+  put(url: string, options?: IMeteorHTTPCallOptions, asyncCallback?: Function): IMeteorHTTPResult;
+  del(url: string, options?: IMeteorHTTPCallOptions, asyncCallback?: Function): IMeteorHTTPResult;
 }
 
-interface IHTTPCallOptions {
+interface IMeteorHTTPCallOptions {
   content?: string;
   data?: Object;
   query?: string;
@@ -358,57 +326,98 @@ interface IHTTPCallOptions {
   followRedirects?: boolean;s
 }
 
-interface IHTTPResultObject {
+interface IMeteorHTTPResult {
   statusCode: number;
   content: string;
   data?: JSON;
   headers: Object;
 }
 
-/**
- * Email
- */
-interface Email {
-  send(options: IEmailOptions): void;
+/*********
+ * Email *
+ *********/
+interface IMeteorEmail {
+  send(options: {
+         from?: string;
+         to: any;
+         cc?: any;
+         bcc?: any;
+         replyTo?: any;
+         subject?: string;
+         text?: string;
+         html?: string;
+         headers?: Object;
+       }): void;
 }
 
-interface IEmailOptions {
-  from: string;
-  to: any;
-  cc: any;
-  bcc: any;
-  replyTo: any;
-  subject: string;
-  text: string;
-  html: string;
-  headers: Object;
-}
 
-/**
- * Assets
- */
-interface Assets {
+/**********
+ * Assets *
+ **********/
+interface IMeteorAssets {
   getText(assetPath: string, asyncCallback?: Function): string;
   getBinary(assetPath: string, asyncCallback?: Function): any;
 }
 
-/**
- * DPP
- */
-interface IDPP {
+/*******
+ * DPP *
+ *******/
+interface IMeteorDPP {
   connect(url: string): void;
 }
 
 declare var Meteor: IMeteor;
-declare var Collection: ICollection;
-declare var Session: ISession;
-declare var Deps: IDeps;
-declare var Accounts: IAccounts;
-
-
-
+declare var Collection: IMeteorCollection;
+declare var Session: IMeteorSession;
+declare var Deps: IMeteorDeps;
+declare var Accounts: IMeteorAccounts;
+declare var Match: IMeteorMatch;
 declare function check(value: any, pattern: any): void;
-declare var Computation: IComputationObject;
-declare var Dependency: IDependencyObject;
-declare var DPP: IDPP;
-declare var Router: IRouter;
+declare var Computation: IMeteorComputationObject;
+declare var Dependency: IMeteorDependencyObject;
+declare var EJSON: IMeteorEJSON;
+declare var HTTP: IMeteorHTTP;
+declare var Email: IMeteorEmail;
+declare var Assets: IMeteorAssets;
+declare var DPP: IMeteorDPP;
+
+
+/******************** Begin definitions for contributed packages from Atmosphere (or elsewhere) *********************/
+
+/***************************************************
+ * For Router and Iron-Router contributed packages *
+ ***************************************************/
+interface IMeteorRouter {
+
+  // These are for Router
+  page(): void;
+  add(route: Object): void;
+  to(path: string, ...args: any[]): void;
+  filters(filtersMap: Object);
+  filter(filterName: string, options?: Object);
+
+  // These are for Iron-Router
+  map(routeMap: Function): void;
+  path(route: string, params?: Object): void;
+  url(route: string): void;
+  routes: Object;
+  configure(options: IMeteorRouterConfig): void;
+}
+
+// For Iron-Router
+interface IMeteorRouterConfig {
+  layout: string;
+  notFoundTemplate: string;
+  loadingTemplate: string;
+  renderTemplates: Object;
+}
+
+interface IMeteorErrors {
+  throw(message: string): void;
+  clear(): void;
+}
+
+// For Router and Iron-Router contributed packages
+declare var Router: IMeteorRouter;
+
+/******************** End definitions for contributed packages from Atmosphere (or elsewhere) ***********************/

@@ -37,3 +37,4 @@ Meteor.methods({
 ;
 
 this.CommentsModel = CommentsModel;
+//@ sourceMappingURL=comments.js.map
