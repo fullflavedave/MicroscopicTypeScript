@@ -234,7 +234,7 @@ interface IMeteorManager {
   created(callback: Function): void;
   destroyed(callback: Function): void;
   events(eventMap: {[eventType: string]: Function}): void;
-  helpers(helpers: Object): Object;
+  helpers(helpers: Object): any;
   preserve(selector: Object): void;
 }
 
