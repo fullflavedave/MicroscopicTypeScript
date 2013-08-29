@@ -1,6 +1,6 @@
 /// <reference path='../../lib/typescript/meteor.d.ts'/>
 
-interface ITemplate {
+declare var Template: {
   newPosts: IMeteorViewModel;
   bestPosts: IMeteorViewModel;
   postsList: IMeteorViewModel;
@@ -13,5 +13,3 @@ interface ITemplate {
   postNew: IMeteorViewModel;
   header: IMeteorViewModel;
 }
-
-declare var Template: ITemplate;
