@@ -2,7 +2,7 @@
 
 The microscope reference app from [Discover Meteor](http://www.discovermeteor.com/ "http://www.discovermeteor.com/"), but written with TypeScript.
 
-This app was written using the Meteor type definitions file found on [DefinitelyTyped](https://github.com/borisyankov/DefinitelyTyped 'https://github.com/borisyankov/DefinitelyTyped').  Usage notes and tips are below.
+This app was written using the Meteor type definitions file found on [DefinitelyTyped](https://github.com/borisyankov/DefinitelyTyped/tree/master/meteor 'https://github.com/borisyankov/DefinitelyTyped/tree/master/meteor').  Usage notes and tips are below.
 
 
 ----------
