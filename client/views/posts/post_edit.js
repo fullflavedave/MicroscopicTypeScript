@@ -1,6 +1,6 @@
 Template.postEdit.helpers({
     post: function () {
-        return PostsModel.Posts.findOne(Session.get('currentPostId'));
+        return Models.Posts.findOne(Session.get('currentPostId'));
     }
 });
 
@@ -16,7 +16,7 @@ Template.postEdit.events({
 
         Meteor.Errors.clear();
 
-        PostsModel.Posts.update(currentPostId, { $set: postProperties }, function (error) {
+        Models.Posts.update(currentPostId, { $set: postProperties }, function (error) {
             if (error) {
                 console.log("Found an error, Dave!");
                 Meteor.Errors.throw(error.reason);
@@ -29,7 +29,7 @@ Template.postEdit.events({
         e.preventDefault();
         if (confirm("Delete this post?")) {
             var currentPostId = Session.get('currentPostId');
-            PostsModel.Posts.remove(currentPostId);
+            Models.Posts.remove(currentPostId);
             Meteor.Router.to('postsList');
         }
     }

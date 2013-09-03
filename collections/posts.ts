@@ -1,13 +1,9 @@
 /// <reference path='../lib/typescript/meteor.d.ts'/>
-/// <reference path='../lib/typescript/underscore-typed-1.4.3.d.ts'/>
+/// <reference path='models.ts'/>
+/// <reference path='../lib/typescript/underscore.d.ts'/>
 /// <reference path='../lib/permissions.ts'/>
 
-
-module PostsModel {
-  export var Posts = new Meteor.Collection('posts');
-};
-
-PostsModel.Posts.deny({
+Models.Posts.deny({
   update: function (userId, post, fieldNames) {
     // may only edit the following three fields:
     return (_.without(fieldNames, 'url', 'title', 'message').length > 0);
@@ -34,7 +30,7 @@ PostsModel.Posts.deny({
 });
 */
 
-PostsModel.Posts.allow({
+Models.Posts.allow({
   update: Permissions.ownsDocument,
   remove: Permissions.ownsDocument
 })
@@ -42,7 +38,7 @@ PostsModel.Posts.allow({
 Meteor.methods({
   insertPost: function (postAttributes) {
 
-    var user = Meteor.user(), postWithSameLink = PostsModel.Posts.findOne({url: postAttributes.url});
+    var user = Meteor.user(), postWithSameLink = Models.Posts.findOne({url: postAttributes.url});
 
     // ensure the user is logged in
     if (!user)
@@ -67,7 +63,7 @@ Meteor.methods({
       votes: 0
     });
 
-    var postId = PostsModel.Posts.insert(post);
+    var postId = Models.Posts.insert(post);
 
     return postId;
   },
@@ -79,7 +75,7 @@ Meteor.methods({
     if (!user)
       throw new Meteor.Error(401, "You need to login to upvote");
 
-    PostsModel.Posts.update({
+    Models.Posts.update({
       _id: postId,
       upvoters: {$ne: user._id}
     }, {
@@ -89,4 +85,3 @@ Meteor.methods({
   }
 });
 
-this.PostsModel = PostsModel;

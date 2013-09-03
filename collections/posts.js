@@ -1,23 +1,17 @@
-var PostsModel;
-(function (PostsModel) {
-    PostsModel.Posts = new Meteor.Collection('posts');
-})(PostsModel || (PostsModel = {}));
-;
-
-PostsModel.Posts.deny({
+Models.Posts.deny({
     update: function (userId, post, fieldNames) {
         return (_.without(fieldNames, 'url', 'title', 'message').length > 0);
     }
 });
 
-PostsModel.Posts.allow({
+Models.Posts.allow({
     update: Permissions.ownsDocument,
     remove: Permissions.ownsDocument
 });
 
 Meteor.methods({
     insertPost: function (postAttributes) {
-        var user = Meteor.user(), postWithSameLink = PostsModel.Posts.findOne({ url: postAttributes.url });
+        var user = Meteor.user(), postWithSameLink = Models.Posts.findOne({ url: postAttributes.url });
 
         if (!user)
             throw new Meteor.Error(401, "You need to login to post new stories");
@@ -38,7 +32,7 @@ Meteor.methods({
             votes: 0
         });
 
-        var postId = PostsModel.Posts.insert(post);
+        var postId = Models.Posts.insert(post);
 
         return postId;
     },
@@ -48,7 +42,7 @@ Meteor.methods({
         if (!user)
             throw new Meteor.Error(401, "You need to login to upvote");
 
-        PostsModel.Posts.update({
+        Models.Posts.update({
             _id: postId,
             upvoters: { $ne: user._id }
         }, {
@@ -57,6 +51,3 @@ Meteor.methods({
         });
     }
 });
-
-this.PostsModel = PostsModel;
-//@ sourceMappingURL=posts.js.map

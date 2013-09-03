@@ -1,16 +1,12 @@
+/// <reference path='../lib/typescript/meteor.d.ts'/>
+/// <reference path='models.ts'/>
+/// <reference path='../lib/typescript/underscore.d.ts'/>
 /// <reference path='../lib/permissions.ts'/>
-/// <reference path='posts.ts'/>
-/// <reference path='notifications.ts'/>
-/// <reference path='../lib/typescript/meteor-typed-0.6.4.1.d.ts'>
-
-module CommentsModel {
-  export var Comments = new Meteor.Collection('comments');
-};
 
 Meteor.methods({
-  insertComment: function (commentAttributes: CommentInterface) {
+  insertComment: function (commentAttributes: IComment) {
     var user = Meteor.user();
-    var post = PostsModel.Posts.findOne(commentAttributes.postId); // ensure the user is logged in
+    var post = Models.Posts.findOne(commentAttributes.postId); // ensure the user is logged in
 
     // ensure the user is logged in
     if (!user)
@@ -27,21 +23,20 @@ Meteor.methods({
       submitted: new Date().getTime()
     });
 
-    PostsModel.Posts.update(comment.postId, {$inc: {commentsCount: 1}});
+    Models.Posts.update(comment.postId, {$inc: {commentsCount: 1}});
 
     // create the comment, save the id
-    comment._id = CommentsModel.Comments.insert(comment);
+    comment._id = Models.Comments.insert(comment);
 
     // now create a notification, informing the user that there's been a comment
-    NotificationsModel.createCommentNotification(comment);
+    Models.createCommentNotification(comment);
 
     return comment._id;
   }
 });
 
-interface CommentInterface {
+interface IComment {
   postId: Number;
   body: String;
 };
 
-this.CommentsModel = CommentsModel;

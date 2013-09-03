@@ -1,10 +1,8 @@
 /// <reference path='../lib/typescript/meteor.d.ts'/>
-/// <reference path='../collections/posts.ts'/>
-/// <reference path='../collections/comments.ts'/>
-
+/// <reference path='../collections/models.ts'/>
 
 // Fixture data
-if (PostsModel.Posts.find().count() === 0) {
+if (Models.Posts.find().count() === 0) {
   var now = new Date().getTime();
 
   // create two users
@@ -14,32 +12,32 @@ if (PostsModel.Posts.find().count() === 0) {
   var sachaId = Meteor.users.insert({
     profile: { name: 'Sacha Greif' } });
   var sacha = Meteor.users.findOne(sachaId);
-  var telescopeId = PostsModel.Posts.insert({
+  var telescopeId = Models.Posts.insert({
     title: 'Introducing Telescope',
     userId: sacha._id,
     author: sacha.profile.name,
     url: 'http://sachagreif.com/introducing-telescope/', submitted: now - 7 * 3600 * 1000,
     commentsCount: 2,
     upvoters: [], votes: 0 });
-  CommentsModel.Comments.insert({
+  Models.Comments.insert({
     postId: telescopeId,
     userId: tom._id,
     author: tom.profile.name,
     submitted: now - 5 * 3600 * 1000,
     body: 'Interesting project Sacha, can I get involved?'
   });
-  CommentsModel.Comments.insert({
+  Models.Comments.insert({
     postId: telescopeId,
     userId: sacha._id,
     author: sacha.profile.name, submitted: now - 3 * 3600 * 1000, body: 'You sure can Tom!'
   });
-  PostsModel.Posts.insert({
+  Models.Posts.insert({
     title: 'Meteor',
     userId: tom._id,
     author: tom.profile.name,
     url: 'http://meteor.com', submitted: now - 10 * 3600 * 1000, commentsCount: 0,
     upvoters: [], votes: 0 });
-  PostsModel.Posts.insert({
+  Models.Posts.insert({
     title: 'The Meteor Book',
     userId: tom._id,
     author: tom.profile.name,
@@ -47,7 +45,7 @@ if (PostsModel.Posts.find().count() === 0) {
     upvoters: [], votes: 0
   });
   for (var i = 0; i < 10; i++) {
-    PostsModel.Posts.insert({
+    Models.Posts.insert({
       title: 'Test post #' + i,
       author: sacha.profile.name,
       userId: sacha._id,

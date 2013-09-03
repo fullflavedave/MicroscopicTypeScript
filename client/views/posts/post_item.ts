@@ -1,5 +1,5 @@
 /// <reference path='../../../lib/typescript/meteor.d.ts'/>
-/// <reference path='../../../lib/typescript/underscore-typed-1.4.3.d.ts'/>
+/// <reference path='../../../lib/typescript/underscore.d.ts'/>
 /// <reference path='../view-model-types.d.ts'/>
 /// <reference path='../../../lib/typescript/jquery.d.ts'/>
 

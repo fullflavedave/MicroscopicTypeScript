@@ -1,8 +1,8 @@
 Template.postPage.helpers({
     currentPost: function () {
-        return PostsModel.Posts.findOne(Session.get('currentPostId'));
+        return Models.Posts.findOne(Session.get('currentPostId'));
     },
     comments: function () {
-        return CommentsModel.Comments.find({ postId: this._id });
+        return Models.Comments.find({ postId: this._id });
     }
 });

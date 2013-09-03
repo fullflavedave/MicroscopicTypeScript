@@ -1,10 +1,10 @@
 /// <reference path='../view-model-types.d.ts'/>
 /// <reference path='../../../lib/typescript/jquery.d.ts'/>
-/// <reference path='../../../collections/posts.ts'/>
+/// <reference path='../../../collections/models.ts'/>
 
 Template.postEdit.helpers({
   post: function () {
-    return PostsModel.Posts.findOne(Session.get('currentPostId'));
+    return Models.Posts.findOne(Session.get('currentPostId'));
   }
 });
 
@@ -20,7 +20,7 @@ Template.postEdit.events({
 
     Meteor.Errors.clear();  // DA: I added this in so that duplicate errors aren't shown after multiple posts
 
-    PostsModel.Posts.update(currentPostId, {$set: postProperties}, function (error) {
+    Models.Posts.update(currentPostId, {$set: postProperties}, function (error) {
       if (error) {
         // display the error to the user
         console.log("Found an error, Dave!");
@@ -35,7 +35,7 @@ Template.postEdit.events({
     e.preventDefault();
     if (confirm("Delete this post?")) {
       var currentPostId = Session.get('currentPostId');
-      PostsModel.Posts.remove(currentPostId);
+      Models.Posts.remove(currentPostId);
       Meteor.Router.to('postsList');
     }
   }

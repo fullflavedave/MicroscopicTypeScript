@@ -1,5 +1,5 @@
 /// <reference path='../view-model-types.d.ts'/>
-/// <reference path='../../../lib/typescript/underscore-typed-1.4.3.d.ts'/>
+/// <reference path='../../../lib/typescript/underscore.d.ts'/>
 
 Template.header.helpers({
   activeRouteClass: function (/* route names */) {
