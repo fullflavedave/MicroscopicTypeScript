@@ -6,5 +6,10 @@
 preserve-inputs
 bootstrap
 router
-accounts-ui-bootstrap-dropdown
 accounts-password
+standard-app-packages
+errors
+page-js-ie-support
+paginated-subscription
+spin
+accounts-ui-bootstrap-dropdown
